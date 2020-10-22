@@ -1,4 +1,4 @@
-# Deepracer live telemetry graphics
+# AWS DeepRacer Live Telemetry Graphics
 
 This project reads the telemetry data from a physical AWS DeepRacer car and displays the current throttle as a live Gauge chart.
 
@@ -6,7 +6,7 @@ The background is set as a bright green colour, designed to be used as an overla
 
 There are two moving parts:
 
-1. A small web server which published the gauge chart as a simple HTML page.
+1. A small web server which publishes the gauge chart as a simple HTML page.
 2. A client app which SSH's to the DeepRacer car and streams the telemetry data, and then pushes to the web server via a websocket connection.
 
 ### Prerequisites
