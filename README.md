@@ -19,9 +19,11 @@ pip install -r requirements.txt
 
 
 
-### Starting the server
+### Server
 
 The server can be installed anywhere, locally or elsewhere (I use a micro EC2 instance when it needs to be public)
+
+Unless you are running the server on the same machine as your web browser you must edit `server/html/index.html` and set `websocket_url` to the IP of the machine running the server.
 
 ```
 source venv/bin/activate (if not already active)
@@ -37,7 +39,7 @@ If you want the server to be exposed publically then use the following command i
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### Starting the client 
+### Client 
 
 Do this in another terminal window.
 
