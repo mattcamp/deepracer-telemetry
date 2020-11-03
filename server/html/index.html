@@ -2,9 +2,9 @@
 <head>
     <style>
         #chart_div text:nth-child(1) {
-          fill: black;
-          font-size: 3em;
-          font-weight: 700;
+            fill: black;
+            font-size: 3em;
+            font-weight: 700;
         }
     </style>
 
@@ -16,7 +16,8 @@
         let chart;
         let data;
         let options;
-        let websocket_url = "ws://localhost:8000/ws"
+        let websocket_url = "ws://localhost:8000/ws";
+        let last_ping_timestamp;
 
         function drawChart() {
             data = google.visualization.arrayToDataTable([
@@ -32,7 +33,7 @@
                 redFrom: 90, redTo: 101,
                 yellowFrom: 70, yellowTo: 90,
                 minorTicks: 5,
-                majorTicks: ["","","","","","","","","",""],
+                majorTicks: ["", "", "", "", "", "", "", "", "", ""],
                 max: 101
             };
 
@@ -40,13 +41,37 @@
 
             chart.draw(data, options);
 
-            let ws = new WebSocket(websocket_url);
+            ws_connect();
+            setInterval(pong, 1000);
+        }
+
+        function ws_connect() {
+            ws = new WebSocket(websocket_url);
+            ws.onopen = function (event) {
+                console.log("Websocket open");
+            }
+
             ws.onmessage = function (event) {
-                let num = parseInt(event.data);
-                console.log(num);
-                data.setValue(0, 1, num);
-                chart.draw(data, options);
+                last_ping_timestamp = new Date();
+                if (event.data != "ping") {
+                    let num = parseInt(event.data);
+                    console.log(num);
+                    data.setValue(0, 1, num);
+                    chart.draw(data, options);
+                } else {
+                    console.log(event.data);
+                }
             };
+            last_ping_timestamp = new Date();
+        }
+
+        function pong() {
+            let now = new Date();
+            if (now - last_ping_timestamp > 3000) {
+                console.log("Too long between pings, reconnecting")
+                ws.close();
+                ws_connect();
+            }
         }
 
         function resizeChart() {
